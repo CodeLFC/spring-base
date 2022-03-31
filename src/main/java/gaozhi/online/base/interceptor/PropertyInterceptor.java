@@ -1,0 +1,54 @@
+package gaozhi.online.base.interceptor;
+
+import gaozhi.online.base.component.GetBeanHelper;
+import gaozhi.online.base.exception.BusinessRuntimeException;
+import gaozhi.online.base.exception.enums.ServerExceptionEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+
+/**
+ * @author LiFucheng
+ * @version 1.0
+ * @description: TODO 权限拦截器
+ * @date 2022/3/31 1:59
+ */
+@Component
+public class PropertyInterceptor extends HandlerInterceptorAdapter {
+    private final GetBeanHelper getBeanHelper;
+
+    @Autowired
+    public PropertyInterceptor(GetBeanHelper getBeanHelper) {
+        this.getBeanHelper = getBeanHelper;
+    }
+
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        // 如果不是映射方法直接通过
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Method method = handlerMethod.getMethod();
+        // 如果方法没注明Auth，则不需要验证
+        HeaderChecker annotation = method.getAnnotation(HeaderChecker.class);
+        if (annotation == null) {
+            return true;
+        }
+        HeaderPropertyChecker headerPropertyChecker = getBeanHelper.getBean(annotation.property(), HeaderPropertyChecker.class);
+        if (headerPropertyChecker.check(request.getHeader(annotation.property()))) {
+            return true;
+        }
+        throw new BusinessRuntimeException(ServerExceptionEnum.PROPERTY_VALIDATE_ERROR,"header属性 "+ annotation.property() + ":" + request.getHeader(annotation.property()));
+    }
+
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+
+    }
+}
