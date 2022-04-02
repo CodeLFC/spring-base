@@ -2,11 +2,12 @@ package gaozhi.online.base.interceptor;
 
 import gaozhi.online.base.component.GetBeanHelper;
 import gaozhi.online.base.exception.BusinessRuntimeException;
+import gaozhi.online.base.exception.enums.ParamExceptionEnum;
 import gaozhi.online.base.exception.enums.ServerExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +20,7 @@ import java.lang.reflect.Method;
  * @date 2022/3/31 1:59
  */
 @Component
-public class PropertyInterceptor extends HandlerInterceptorAdapter {
+public class PropertyInterceptor implements HandlerInterceptor {
     private final GetBeanHelper getBeanHelper;
 
     @Autowired
@@ -40,10 +41,13 @@ public class PropertyInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
         HeaderPropertyChecker headerPropertyChecker = getBeanHelper.getBean(annotation.property(), HeaderPropertyChecker.class);
-        if (headerPropertyChecker.check(request.getHeader(annotation.property()))) {
+        if(headerPropertyChecker==null){
+            throw new BusinessRuntimeException(ParamExceptionEnum.INNER_PARAM_IS_INVALID,"HeaderPropertyChecker=null, property:"+annotation.property());
+        }
+        if (headerPropertyChecker.check(annotation.grade(), request.getHeader(annotation.property()))) {
             return true;
         }
-        throw new BusinessRuntimeException(ServerExceptionEnum.PROPERTY_VALIDATE_ERROR,"header属性 "+ annotation.property() + ":" + request.getHeader(annotation.property()));
+        throw new BusinessRuntimeException(ServerExceptionEnum.PROPERTY_VALIDATE_ERROR, "header属性 " + annotation.property() + ":" + request.getHeader(annotation.property()));
     }
 
 

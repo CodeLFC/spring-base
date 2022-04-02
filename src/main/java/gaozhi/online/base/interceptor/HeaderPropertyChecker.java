@@ -1,5 +1,5 @@
 package gaozhi.online.base.interceptor;
 
 public interface HeaderPropertyChecker {
-    boolean check(String value);
+    boolean check(int grade,String value);
 }
