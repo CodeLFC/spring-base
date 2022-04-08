@@ -40,14 +40,13 @@ public class PropertyInterceptor implements HandlerInterceptor {
         if (annotation == null) {
             return true;
         }
-        HeaderPropertyChecker headerPropertyChecker = getBeanHelper.getBean(annotation.property(), HeaderPropertyChecker.class);
+        HeaderPropertyChecker<?> headerPropertyChecker = getBeanHelper.getBean(annotation.property(), HeaderPropertyChecker.class);
         if(headerPropertyChecker==null){
             throw new BusinessRuntimeException(ParamExceptionEnum.INNER_PARAM_IS_INVALID,"HeaderPropertyChecker=null, property:"+annotation.property());
         }
-        if (headerPropertyChecker.check(annotation.grade(), request.getHeader(annotation.property()))) {
-            return true;
-        }
-        throw new BusinessRuntimeException(ServerExceptionEnum.PROPERTY_VALIDATE_ERROR, "header属性 " + annotation.property() + ":" + request.getHeader(annotation.property()));
+        Object obj = headerPropertyChecker.check(annotation.grade(), request.getHeader(annotation.property()));
+        request.setAttribute(annotation.property(), obj);
+        return true;
     }
 
 
