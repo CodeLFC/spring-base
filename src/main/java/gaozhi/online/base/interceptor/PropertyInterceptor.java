@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
  */
 @Component
 public class PropertyInterceptor implements HandlerInterceptor {
+    //获取bean
     private final GetBeanHelper getBeanHelper;
 
     @Autowired
@@ -46,8 +47,10 @@ public class PropertyInterceptor implements HandlerInterceptor {
         }
         //预处理
         headerPropertyChecker.preHandle(request, response, handlerMethod);
+
+        String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getRequestURL().toString();
         //校验
-        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), request.getRequestURL().toString());
+        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url);
         request.setAttribute(annotation.property(), obj);
         return true;
     }

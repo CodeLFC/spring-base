@@ -11,5 +11,8 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HeaderChecker {
+    //远程过程调用
+    String rpcURLKey = "rpcURLKey";
+    boolean rpc() default false;
     String property() default "token";
 }
