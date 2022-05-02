@@ -48,7 +48,7 @@ public class PropertyInterceptor implements HandlerInterceptor {
         //预处理
         headerPropertyChecker.preHandle(request, response, handlerMethod);
 
-        String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getRequestURL().toString();
+        String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getContextPath();
         //校验
         Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url);
         request.setAttribute(annotation.property(), obj);
