@@ -12,5 +12,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HeaderChecker {
     String property() default "token";
-    int grade() default 0;
 }
