@@ -4,6 +4,7 @@ import gaozhi.online.base.component.GetBeanHelper;
 import gaozhi.online.base.exception.BusinessRuntimeException;
 import gaozhi.online.base.exception.enums.ParamExceptionEnum;
 import gaozhi.online.base.exception.enums.ServerExceptionEnum;
+import gaozhi.online.base.util.IPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -49,8 +50,9 @@ public class PropertyInterceptor implements HandlerInterceptor {
         headerPropertyChecker.preHandle(request, response, handlerMethod);
 
         String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getRequestURL().toString();
+        String ip =annotation.rpc()?request.getHeader(HeaderChecker.rpcClientIp): IPUtil.getRemoteHost(request);
         //校验
-        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url, annotation.rpc());
+        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url,ip, annotation.rpc());
         request.setAttribute(annotation.property(), obj);
         return true;
     }
