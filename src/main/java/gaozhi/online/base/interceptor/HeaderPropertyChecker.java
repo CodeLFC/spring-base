@@ -30,6 +30,6 @@ public interface HeaderPropertyChecker<T> {
      * @author LiFucheng
      * @date: 2022/5/2 10:04
      */ 
-    T check(String value,String url);
+    T check(String value,String url,boolean rpc);
 
 }
