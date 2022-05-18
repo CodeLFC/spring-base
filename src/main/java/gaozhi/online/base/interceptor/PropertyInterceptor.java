@@ -52,7 +52,7 @@ public class PropertyInterceptor implements HandlerInterceptor {
         String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getRequestURL().toString();
         String ip =annotation.rpc()?request.getHeader(HeaderChecker.rpcClientIp): IPUtil.getRemoteHost(request);
         //校验
-        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url,ip, annotation.rpc());
+        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url,ip, annotation.rpc(),request,response);
         request.setAttribute(annotation.property(), obj);
         return true;
     }
