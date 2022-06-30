@@ -30,6 +30,7 @@ public class PropertyInterceptor implements HandlerInterceptor {
         this.getBeanHelper = getBeanHelper;
     }
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 如果不是映射方法直接通过
         if (!(handler instanceof HandlerMethod)) {
@@ -49,10 +50,20 @@ public class PropertyInterceptor implements HandlerInterceptor {
         //预处理
         headerPropertyChecker.preHandle(request, response, handlerMethod);
 
-        String url = annotation.rpc() ? request.getHeader(HeaderChecker.rpcURLKey) : request.getRequestURL().toString();
-        String ip =annotation.rpc()?request.getHeader(HeaderChecker.rpcClientIp): IPUtil.getRemoteHost(request);
+        String ip = request.getHeader(HeaderChecker.rpcClientIp);
+        if (ip == null) {
+            ip = IPUtil.getRemoteHost(request);
+        }
+        String url = request.getHeader(HeaderChecker.rpcURLKey);
+        if (url == null) {
+            url = request.getRequestURL().toString();
+        }
+        //放置header内容
+        EditableHttpServletRequestWrapper editableHttpServletRequestWrapper = new EditableHttpServletRequestWrapper(request);
+        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcURLKey, url);
+        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip);
         //校验
-        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url,ip, annotation.rpc(),request,response);
+        Object obj = headerPropertyChecker.check(request.getHeader(annotation.property()), url, ip, request, response);
         request.setAttribute(annotation.property(), obj);
         return true;
     }

@@ -11,7 +11,8 @@ import gaozhi.online.base.result.Result;
  */
 public enum ServerExceptionEnum implements Result.ResultEnum {
     GENERAL_ERROR(-1,"未处理的全局服务器异常 Exception"),
-    PROPERTY_VALIDATE_ERROR(-2,"属性校验未通过")
+    PROPERTY_VALIDATE_ERROR(-2,"属性校验未通过"),
+    QPS_ERROR(-3,"异常访问")
     ;
 
     private final int  code;

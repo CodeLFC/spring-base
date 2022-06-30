@@ -15,6 +15,5 @@ public @interface HeaderChecker {
     String rpcURLKey = "rpcURLKey";
     //向发起远程过程调用方发起请求的客户端Ip
     String rpcClientIp = "rpcClientIp";
-    boolean rpc() default false;
     String property() default "token";
 }
