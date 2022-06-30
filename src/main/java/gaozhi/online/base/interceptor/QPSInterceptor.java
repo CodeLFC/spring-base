@@ -31,7 +31,7 @@ public class QPSInterceptor implements HandlerInterceptor {
      * @date 2022/6/30 18:33
      */
     public static class Visitor {
-        private final long period = 300;
+        private final long period = 1000;
         private long qpsMax;
         private String ip;
         private final Map<String, PriorityQueue<Long>> countMap = new HashMap<>();
@@ -57,7 +57,8 @@ public class QPSInterceptor implements HandlerInterceptor {
                 }
             }
             request.offer(current);
-            return true;
+
+            return getQPS(url) < qpsMax;
         }
 
         public long getQPS(String url) {
