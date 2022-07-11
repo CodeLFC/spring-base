@@ -5,7 +5,6 @@ package gaozhi.online.base.config;
  * @description: TODO  请求中带有 特殊字符的 配置
  * @date 2021/10/26 18:53
  */
-import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
