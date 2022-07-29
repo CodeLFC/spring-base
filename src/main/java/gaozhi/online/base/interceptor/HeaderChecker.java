@@ -16,6 +16,6 @@ public @interface HeaderChecker {
     //向发起远程过程调用方发起请求的客户端Ip
     String rpcClientIp = "rpcClientIp";
     //权限校验
-    String accessToken = "accessToken";
+    String accessToken = "token";
     String property() default accessToken;
 }
