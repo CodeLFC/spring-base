@@ -21,7 +21,10 @@ public class SystemConfig {
     public ServletWebServerFactory webServerFactory() {
         TomcatServletWebServerFactory fa = new TomcatServletWebServerFactory();
         //json 串中的特殊字符
-        fa.addConnectorCustomizers(connector -> connector.setProperty("relaxedQueryChars", "[]{}"));
+        fa.addConnectorCustomizers(connector -> {
+            connector.setProperty("relaxedQueryChars", "(),/:;<=>?@[\\]{}");
+            connector.setProperty("rejectIllegalHeader", "false");
+        });
         return fa;
     }
 }

@@ -36,8 +36,8 @@ public class Result {
     }
 
     int code;
-    String message;
-    String data;
+    String message="";
+    String data="";
 
     public int getCode() {
         return code;
