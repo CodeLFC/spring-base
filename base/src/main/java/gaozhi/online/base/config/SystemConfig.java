@@ -9,9 +9,9 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 /**
  * 配置Spring boot支持在查询参数中加{}[]字符。
+ *
  * @author elon
  * @version 2019年1月6日
  */
