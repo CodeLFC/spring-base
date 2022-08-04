@@ -61,6 +61,22 @@
             <version>${google.code.gson.version}</version>
         </dependency>
         <!--+++++++++++++++++++++++++++++++++++++springboot++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+        </dependency>
         <!--springBoot起步依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
