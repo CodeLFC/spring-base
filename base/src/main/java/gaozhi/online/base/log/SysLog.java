@@ -32,7 +32,7 @@ public class SysLog {
                 ", uri='" + uri + '\'' +
                 ", time=" + FormatDateTimeUtil.getFormatDateTime(time) +
                 ", executeTime=" + executeTime +
-                "s, remark='" + property + '\'' +
+                "ms, remark='" + property + '\'' +
                 '}';
     }
 }
