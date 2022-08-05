@@ -9,13 +9,16 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+
 /**
  * 配置Spring boot支持在查询参数中加{}[]字符。
- *
+ * 开启 AspectJ 的自动代理
  * @author elon
  * @version 2019年1月6日
  */
 @Configuration
+@EnableAspectJAutoProxy
 public class SystemConfig {
     @Bean
     public ServletWebServerFactory webServerFactory() {
