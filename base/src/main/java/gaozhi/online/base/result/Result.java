@@ -1,6 +1,7 @@
 package gaozhi.online.base.result;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * @description(结果)
@@ -9,7 +10,7 @@ import com.google.gson.Gson;
  * @version: 1.0
  */
 public class Result {
-    private static final Gson gson = new Gson();
+    private static final Gson gson =  new GsonBuilder().enableComplexMapKeySerialization().create();
 
     /**
      * 成功
@@ -36,8 +37,8 @@ public class Result {
     }
 
     int code;
-    String message="";
-    String data="";
+    String message=" ";
+    String data=" ";
 
     public int getCode() {
         return code;
