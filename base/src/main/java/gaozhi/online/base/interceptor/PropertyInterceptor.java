@@ -3,9 +3,8 @@ package gaozhi.online.base.interceptor;
 import gaozhi.online.base.component.GetBeanHelper;
 import gaozhi.online.base.exception.BusinessRuntimeException;
 import gaozhi.online.base.exception.enums.ParamExceptionEnum;
-import gaozhi.online.base.exception.enums.ServerExceptionEnum;
-import gaozhi.online.base.log.LogAop;
 import gaozhi.online.base.util.IPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -22,6 +21,7 @@ import java.lang.reflect.Method;
  * @date 2022/3/31 1:59
  */
 @Component
+@Slf4j
 public class PropertyInterceptor implements HandlerInterceptor {
     //获取bean
     private final GetBeanHelper getBeanHelper;
@@ -39,9 +39,6 @@ public class PropertyInterceptor implements HandlerInterceptor {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-        //用于日志
-        request.setAttribute(LogAop.logIP, IPUtil.getRemoteHost(request));
-        request.setAttribute(LogAop.logURL, request.getRequestURL().toString());
         // 如果方法没注明Auth，则不需要验证
         HeaderChecker annotation = method.getAnnotation(HeaderChecker.class);
         if (annotation == null) {
@@ -56,22 +53,20 @@ public class PropertyInterceptor implements HandlerInterceptor {
 
         String ip = request.getHeader(HeaderChecker.rpcClientIp);
         if (ip == null) {
-            ip = (String) request.getAttribute(LogAop.logIP);
+            ip = IPUtil.getRemoteHost(request);
         }
         String url = request.getHeader(HeaderChecker.rpcURLKey);
         if (url == null) {
-            url = (String) request.getAttribute(LogAop.logURL);
+            url = request.getRequestURL().toString();
         }
         //放置header内容
         EditableHttpServletRequestWrapper editableHttpServletRequestWrapper = new EditableHttpServletRequestWrapper(request);
         editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcURLKey, url);
-        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip);
+        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip); 
         String property = request.getHeader(annotation.property());
         //校验
         Object obj = headerPropertyChecker.check(property, url, ip, request, response);
         request.setAttribute(annotation.property(), obj);
-        //用于日志
-        request.setAttribute(LogAop.logCustomProperty, property);
         return true;
     }
 

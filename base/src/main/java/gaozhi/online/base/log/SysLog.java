@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysLog {
+    public static final String logURL = "logURL";
+    public static final String logIP = "logIP";
     private long id;
     private String type;
     private String ip;

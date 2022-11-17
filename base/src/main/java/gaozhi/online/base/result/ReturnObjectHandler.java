@@ -36,7 +36,9 @@ public class ReturnObjectHandler implements ResponseBodyAdvice<Object> {
         }
         //修复返回类型为String 是类型转换的错误
         if (o instanceof String) {
-            return gson.toJson(Result.success(o));
+            Result result = Result.success();
+            result.setData((String) o);
+            return gson.toJson(result);
         }
         return Result.success(o);
     }
