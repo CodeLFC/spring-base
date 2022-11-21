@@ -64,9 +64,11 @@ public class PropertyInterceptor implements HandlerInterceptor {
         editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcURLKey, url);
         editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip); 
         String property = request.getHeader(annotation.property());
-        //校验
-        Object obj = headerPropertyChecker.check(property, url, ip, request, response);
+        //校验头部属性
+        Object obj = headerPropertyChecker.propertyCheck(property, request);
         request.setAttribute(annotation.property(), obj);
+        //校验方法权限
+        headerPropertyChecker.privilegeCheck(url,ip,request);
         return true;
     }
 

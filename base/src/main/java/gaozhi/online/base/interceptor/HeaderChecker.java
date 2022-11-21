@@ -11,11 +11,12 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HeaderChecker {
-    //远程过程调用的键
+    /**远程过程调用的URL*/
     String rpcURLKey = "rpcURLKey";
-    //向发起远程过程调用方发起请求的客户端Ip
+     /**向发起远程过程调用方发起请求的客户端Ip*/
     String rpcClientIp = "rpcClientIp";
-    //权限校验
+    /**权限校验*/
     String accessToken = "token";
+    /**需要检查的头部属性*/
     String property() default accessToken;
 }

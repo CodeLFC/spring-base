@@ -21,15 +21,23 @@ public interface HeaderPropertyChecker<T> {
      * @date: 2022/5/2 10:09
      */
     default void preHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler){}
+
+
     /** 
      * @description: 检查被HeaderChecker注解标记的请求中的header中key==HeaderChecker.property的value
-     * @param: grade 检查等级 HeaderChecker.grade
      * @param: value header中key==HeaderChecker.property的value
-     * @param: url 被处理的接口url
      * @return: T 被check方法处理后返回的值，将通过HttpServletRequest.setAttribute(HeaderChecker.property(), T)方法放入请求中，可通过参数注解 @RequestAttribute(property)注入
      * @author LiFucheng
      * @date: 2022/5/2 10:04
      */ 
-    T check(String value,String url,String clientIp,HttpServletRequest request,HttpServletResponse response);
-
+    T propertyCheck(String value,HttpServletRequest request);
+    /**
+    * @description: 请求的权限校验
+    * @param url 访问的url
+     * @param clientIp 客户端ip
+     * @param request  当前请求
+    * @author http://gaozhi.online
+    * @date: 2022/11/21 19:39
+    */
+    void privilegeCheck(String url, String clientIp,HttpServletRequest request);
 }
