@@ -3,6 +3,7 @@ package gaozhi.online.base.interceptor;
 import gaozhi.online.base.component.GetBeanHelper;
 import gaozhi.online.base.exception.BusinessRuntimeException;
 import gaozhi.online.base.exception.enums.ParamExceptionEnum;
+import gaozhi.online.base.privilege.Privilege;
 import gaozhi.online.base.util.IPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,9 @@ public class PropertyInterceptor implements HandlerInterceptor {
         Object obj = headerPropertyChecker.propertyCheck(property, request);
         request.setAttribute(annotation.property(), obj);
         //校验方法权限
-        headerPropertyChecker.privilegeCheck(url,ip,request);
+        if(method.isAnnotationPresent(Privilege.class)) {
+            headerPropertyChecker.privilegeCheck(url, ip, request);
+        }
         return true;
     }
 
