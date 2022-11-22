@@ -1,6 +1,5 @@
 package gaozhi.online.base.privilege;
 
-import java.util.Set;
 
 /**
 * @description: TODO 权限初始化
@@ -11,11 +10,9 @@ import java.util.Set;
 public interface PrivilegesInitializer {
     /**
     * @description: 处理权限
-    * @param name 权限名
-     * @param description 权限的描述
-     * @param urlSet 一个方法可能对应多个url
+     * @param fullUrl 一个方法可能对应多个url
     * @author http://gaozhi.online
     * @date: 2022/11/21 19:54
     */
-    void handlePrivilege(String name, String description, Set<String> urlSet);
+    void handlePrivilege(Privilege klass,Privilege method, String[] fullUrl,String[]methodUrl);
 }
