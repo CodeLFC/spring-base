@@ -41,12 +41,12 @@ public class SpringStartListener implements ApplicationListener<ContextRefreshed
             HandlerMethod handlerMethod = entry.getValue();
             Privilege classPrivilege = handlerMethod.getBeanType().getAnnotation(Privilege.class);
             if(classPrivilege==null){
-                log.info("类没有注解---{}",handlerMethod.getBeanType().getName());
+                log.debug("类没有注解---{}",handlerMethod.getBeanType().getName());
                 continue;
             }
             Privilege methodPrivilege =handlerMethod.getMethodAnnotation(Privilege.class);
             if(methodPrivilege==null){
-                log.info("方法没有注解---{}",handlerMethod.getMethod().getName());
+                log.debug("方法没有注解---{}",handlerMethod.getMethod().getName());
                 continue;
             }
             //url
@@ -55,7 +55,7 @@ public class SpringStartListener implements ApplicationListener<ContextRefreshed
             String[] methodUrl={};
             Annotation[] annotations = handlerMethod.getMethod().getAnnotations();
             for (Annotation annotation : annotations) {
-                log.info("注解：{}",annotation.annotationType().getName());
+                log.debug("注解：{}",annotation.annotationType().getName());
                 //请求
                 if(annotation instanceof RequestMapping){
                     methodUrl = ((RequestMapping) annotation).value();

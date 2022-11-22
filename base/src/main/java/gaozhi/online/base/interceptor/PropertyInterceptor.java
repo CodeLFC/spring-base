@@ -58,7 +58,7 @@ public class PropertyInterceptor implements HandlerInterceptor {
         }
         String url = request.getHeader(HeaderChecker.rpcURLKey);
         if (url == null) {
-            url = request.getRequestURL().toString();
+            url = request.getServletPath();
         }
         //放置header内容
         EditableHttpServletRequestWrapper editableHttpServletRequestWrapper = new EditableHttpServletRequestWrapper(request);
