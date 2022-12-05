@@ -1,7 +1,12 @@
 # spring-base
 [![OSCS Status](https://www.oscs1024.com/platform/badge/CodeLFC/spring-base.svg?size=small)](https://www.oscs1024.com/project/CodeLFC/spring-base?ref=badge_small)
-<br>对springBoot项目中的统一异常捕获，统一结果格式，header校验，系统日志，提供一个基础实现。这个基础模块在构建SpringBoot项目时给我带来了很大的方便，添加依赖就可以轻松构建标准的SpringBoot项目
-# 使用方法
+<br>对springBoot项目的一些通用操作进行的封装,包括如下几个部分：
+- 统一的异常捕获，
+- 统一的JSON返回格式
+- 统一的权限接口扫描：@Privilege 被注解的请求会在项目启动时被扫描处理
+- 统一的请求header参数校验与权限校验：@HeaderChecker 被注解的请求会被拦截到HeaderPropertyChecker处理
+- 这个基础模块在构建SpringBoot项目时给我带来了很大的方便，添加依赖就可以轻松构建标准的SpringBoot项目
+# 使用方法（两种）
 1. 下载源代码编译,安装到本地仓库，可修改springBoot(2.3.10.RELEASE)以及springCloud(Hoxton.SR11)版本。
 
 2. 直接使用远程maven仓库(如果没有修改版本的需求，推荐使用远程仓库的模式)
@@ -13,13 +18,16 @@
           <artifactId>spring-base</artifactId>
           <version>1.0</version>
        </parent>
+   
       <!--添加基础依赖-->
-      <dependency>
-          <groupId>gaozhi.online</groupId>
-           <artifactId>base</artifactId>
-           <version>1.0</version>
-      </dependency>
-      
+      <dependencys>
+          <dependency>
+              <groupId>gaozhi.online</groupId>
+               <artifactId>base</artifactId>
+               <version>1.0</version>
+          </dependency>
+      </dependencys>
+   
       <repositories>
           <!--添加git远程仓库-->
           <repository>
@@ -36,7 +44,7 @@
 1. 统一结果格式：在Application中添加包扫描配置即可自动将Controller层返回结果封装为JSON
      ``` 
     @SpringBootApplication
-    //添加包（gaozhi.online.base.ScanClass.class）的扫描
+    //添加基础包（gaozhi.online.base.ScanClass.class）的扫描；可以添加自身项目的扫描路径
     @ComponentScan(basePackageClasses = {gaozhi.online.base.ScanClass.class,Application.class})
     public class Application {
         public static void main(String[] args) {
@@ -44,7 +52,7 @@
         }
     }
     ``` 
-    统一返回结果格式：
+    统一返回结果格式如下：
     ```
     //格式
     {
@@ -144,7 +152,7 @@
        private final Gson gson = new Gson();
        @Autowired
        private UserService userService;
-   
+       /**被HeaderChecker注释的接口会走如下逻辑进行header参数校验，一般为Token检查用户是否登陆*/
        @Override
        public Token check(String value, String url, String ip,HttpServletRequest request,HttpServletResponse response) {
            //log.info("url=" + url + " 检查用户token:" + value);
@@ -177,7 +185,28 @@
            request.setAttribute(HEADER_ATTRIBUTE_USER, userInfo);
            return token;
        }
-   
+        /**被HeaderChecker注释且被Privilege注释的接口会走如下逻辑进行权限校验*/
+       @Override
+       public void privilegeCheck(String url, String clientIp, HttpServletRequest request) {
+           UserInfo userInfo = (UserInfo) request.getAttribute(HEADER_ATTRIBUTE_USER);
+           //校验url权限
+           log.info(url);
+           if (!userService.checkURLPrivilege(userInfo.getStatus(), url)) {
+               throw new UserException(UserExceptionEnum.USER_AUTH_ERROR, "没有权限访问 url=" + url);
+           }
+           //把所有需要鉴权的地方加上Privilege注解，添加角色与权限之间的关系
+           //更新ip地址
+           userInfo.setIp(clientIp);
+           userService.updateIp(userInfo.getId(), clientIp);
+           //记录日志
+           log.info("发生敏感操作，此处需要记录日志，url:{} , clientIp:{}",url,clientIp);
+           SysLog sysLog = new SysLog();
+           sysLog.setIp(clientIp);
+           sysLog.setTime(System.currentTimeMillis());
+           sysLog.setUserid(userInfo.getId());
+           sysLog.setUrl(url);
+           sysLogFeignClient.postLog(sysLog);
+       }
    }
 
     ```
@@ -191,44 +220,82 @@
       //参数注解方式获取
       @RequestAttribute(HeaderChecker.rpcClientIp) String clientIp
     ```
-4. AOP日志
-  - 实现日志切面，覆盖切入点表达式，注入日志服务
+4. 权限列表的扫描，会在项目启动时扫描一次被@Privilege注解的接口，可以动态的更新权限的列表
+   - 添加注解 
+   ```
+   /**对类添加@Privilege注解，标识此类中有需要扫描的方法*/
+   
+   @Privilege(name = "角色管理",description = "对角色进行管理")
+   @Validated
+   @RestController
+   @RequestMapping(value = "/admin/role")
+   @Slf4j
+   public class AdminRoleController {
+      @Privilege(name = "修改角色",description = "修改角色的具体信息")
+      @HeaderChecker
+      @PostMapping(value = "/post/operate")
+      public Role operateRole(@RequestAttribute(TokenChecker.HEADER_ATTRIBUTE_USER) UserInfo loginUser, @RequestBody Role role){
+           
+      }
+   }
     ```
+   - 实现接口 PrivilegeHandler 示例如下
+   ```
+    /**
+    * @description: TODO  启动时扫描需要鉴权的API
+    * @author http://gaozhi.online
+    * @date 2022/11/21 21:57
+    * @version 1.0
+    */
     @Component
-    @Aspect
     @Slf4j
-    public class ControllerLogAop extends LogAop {
-        {
-            log.info("ControllerLogAop注入");
-        }
-        
-        @Override
-        @Pointcut("execution(* gaozhi.online.peoplety.user.controller.*.*(..))")
-        public void pointcut() {
+    public class PrivilegeScanService implements PrivilegesInitializer {
+        private PrivilegeHandler privilegeHandler;
     
+        public void setPrivilegeHandler(PrivilegeHandler privilegeHandler) {
+            this.privilegeHandler = privilegeHandler;
         }
     
-        @Autowired
         @Override
-        public void setSysLogService(ILogService sysLogService) {
-            super.setSysLogService(sysLogService);
+        public void handlePrivilege(Privilege klass, Privilege method, String[] fullUrl, String[] methodUrl) {
+            log.info("扫描到需要鉴权的接口：{}-{}-{}-{}",klass.name(),method.name(),Arrays.toString(fullUrl), Arrays.toString(methodUrl));
+            for(String kUrl:fullUrl){
+                for(String mUrl:methodUrl){
+                    if(kUrl.endsWith(mUrl)){
+                        //找到对应的方法
+                        log.info("找到路径匹配的方法:类URL：{},方法URL:{}",kUrl,mUrl);
+                        gaozhi.online.peoplety.entity.Privilege klassPrivilege = new gaozhi.online.peoplety.entity.Privilege();
+                        //一级权限
+                        klassPrivilege.setFirstUrl(kUrl.substring(0,kUrl.length() - mUrl.length()));
+                        klassPrivilege.setSubUrl("*");
+                        klassPrivilege.setUrl(klassPrivilege.getFirstUrl()+klassPrivilege.getSubUrl());
+                        klassPrivilege.setName(klass.name());
+                        klassPrivilege.setDescription(klass.description());
+                        insertOrUpdate(klassPrivilege);
+                        //二级权限
+                        gaozhi.online.peoplety.entity.Privilege privilege = new gaozhi.online.peoplety.entity.Privilege();
+                        privilege.setUrl(kUrl);
+                        privilege.setFirstUrl(klassPrivilege.getFirstUrl());
+                        privilege.setSubUrl(mUrl);
+                        privilege.setName(method.name());
+                        privilege.setDescription(method.description());
+                        insertOrUpdate(privilege);
+                        break;
+                    }
+                }
+            }
+        }
+        private void insertOrUpdate(gaozhi.online.peoplety.entity.Privilege privilege){
+            if(privilegeHandler!=null){
+                privilegeHandler.handle(privilege);
+            }else{
+                log.info("未注入权限处理器 PrivilegeHandler: 权限未处理:{}", privilege);
+            }
+        }
+        /**权限处理者，可以实现插入数据库等操作*/
+        public interface PrivilegeHandler{
+            void handle(gaozhi.online.peoplety.entity.Privilege privilege);
         }
     }
-
-    ```
-  - 实现日志服务
-    ```
-    @Service
-    @Slf4j
-    public class ControllerLogServiceImpl implements ILogService {
-      
-        @Override
-        public void handle(SysLog log) {
-            //自定义的日志操作
-            log.setType(systemPropertyConfig.getApplicationName());
-            sysLogFeignClient.writeLog(log);
-        }
-    }
-    ```
-    
-    
+   ```
+   
