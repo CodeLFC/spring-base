@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 public class PropertyInterceptor implements HandlerInterceptor {
     //获取bean
     private final GetBeanHelper getBeanHelper;
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
 
     @Autowired
     public PropertyInterceptor(GetBeanHelper getBeanHelper) {
@@ -60,16 +62,21 @@ public class PropertyInterceptor implements HandlerInterceptor {
         if (url == null) {
             url = request.getServletPath();
         }
+        String privilege = request.getHeader(HeaderChecker.rpcPrivilege);
+        if (privilege == null) {
+            privilege = FALSE;
+        }
         //放置header内容
         EditableHttpServletRequestWrapper editableHttpServletRequestWrapper = new EditableHttpServletRequestWrapper(request);
         editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcURLKey, url);
-        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip); 
+        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcClientIp, ip);
+        editableHttpServletRequestWrapper.addHeader(HeaderChecker.rpcPrivilege, privilege);
         String property = request.getHeader(annotation.property());
         //校验头部属性
         Object obj = headerPropertyChecker.propertyCheck(property, request);
         request.setAttribute(annotation.property(), obj);
         //校验方法权限
-        if(method.isAnnotationPresent(Privilege.class)) {
+        if (method.isAnnotationPresent(Privilege.class) || TRUE.equals(privilege)) {
             headerPropertyChecker.privilegeCheck(url, ip, request);
         }
         return true;
