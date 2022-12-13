@@ -26,8 +26,8 @@ import java.lang.reflect.Method;
 public class PropertyInterceptor implements HandlerInterceptor {
     //获取bean
     private final GetBeanHelper getBeanHelper;
-    private static final String TRUE = "true";
-    private static final String FALSE = "false";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
 
     @Autowired
     public PropertyInterceptor(GetBeanHelper getBeanHelper) {
