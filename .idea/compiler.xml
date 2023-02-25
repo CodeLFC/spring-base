@@ -17,7 +17,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="base" options="-parameters" />
-      <module name="spring-base" options="-parameters" />
+      <module name="spring-base" options="" />
       <module name="user" options="-parameters" />
     </option>
   </component>

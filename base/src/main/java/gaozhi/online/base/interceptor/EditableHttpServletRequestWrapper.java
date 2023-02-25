@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * @author LiFucheng
  * @version 1.0
- * @description: TODO 可修改的header
+ * @description: TODO 可修改的HttpServletRequestWrapper
  * @date 2022/6/30 18:21
  */
 public class EditableHttpServletRequestWrapper extends HttpServletRequestWrapper {
@@ -18,7 +18,7 @@ public class EditableHttpServletRequestWrapper extends HttpServletRequestWrapper
         super(request);
     }
 
-    private Map<String, String> headerMap = new HashMap<>();
+    private final Map<String, String> headerMap = new HashMap<>();
 
     /**
      * add a header with given name and value
@@ -45,9 +45,7 @@ public class EditableHttpServletRequestWrapper extends HttpServletRequestWrapper
     @Override
     public Enumeration<String> getHeaderNames() {
         List<String> names = Collections.list(super.getHeaderNames());
-        for (String name : headerMap.keySet()) {
-            names.add(name);
-        }
+        names.addAll(headerMap.keySet());
         return Collections.enumeration(names);
     }
 

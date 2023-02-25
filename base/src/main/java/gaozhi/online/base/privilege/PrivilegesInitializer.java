@@ -2,7 +2,7 @@ package gaozhi.online.base.privilege;
 
 
 /**
-* @description: TODO 权限初始化
+* @description: TODO 权限初始化,被Privilege标注的方法都会在启动时被处理一次
 * @author http://gaozhi.online
 * @date 2022/11/21 19:52
 * @version 1.0

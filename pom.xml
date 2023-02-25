@@ -47,6 +47,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!---jwt-->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
+        </dependency>
         <!--++++++++++++++++++++++++++++GSON依赖++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
