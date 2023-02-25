@@ -2,6 +2,7 @@ package gaozhi.online.base.util;
 
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 /**
 * @description: TODO 格式化日期时间工具
@@ -26,5 +27,22 @@ public class FormatDateTimeUtil {
 
     public static String getFormatTime(long time) {
         return formatTime.format(new Date(time));
+    }
+
+    private static final long _1h = 3600000;
+
+    public static boolean isToday(long time) {
+        //Calendar使用单例，多次调用不重复创建对象
+        Calendar calendar = Calendar.getInstance();
+        //使用System获取当前时间
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long today = calendar.getTimeInMillis();
+        if (time - today < _1h*24&&time-today>0)
+            return true;
+        return false;
     }
 }
