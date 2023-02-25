@@ -1,16 +1,15 @@
 # spring-base
 [![OSCS Status](https://www.oscs1024.com/platform/badge/CodeLFC/spring-base.svg?size=small)](https://www.oscs1024.com/project/CodeLFC/spring-base?ref=badge_small)
 <br>对springBoot项目的一些通用操作进行的封装,包括如下几个部分：
-- 统一的异常捕获，
+- 统一的异常捕获
 - 统一的JSON返回格式
-- 统一的权限接口扫描：@Privilege 被注解的请求会在项目启动时被扫描处理
+- 统一的权限接口扫描：@Privilege 被注解的请求会在项目启动时被扫描处理,此注解需要配合@HeaderChecker使用
 - 统一的请求header参数校验与权限校验：@HeaderChecker 被注解的请求会被拦截到HeaderPropertyChecker处理
 - 这个基础模块在构建SpringBoot项目时给我带来了很大的方便，添加依赖就可以轻松构建标准的SpringBoot项目
-# 使用方法（两种）
-1. 下载源代码编译,安装到本地仓库，可修改springBoot(2.3.10.RELEASE)以及springCloud(Hoxton.SR11)版本。
+# 使用方法
+1. 首先下载源代码使用maven安装到本地仓库，可修改springBoot(2.3.10.RELEASE)以及springCloud(Hoxton.SR11)版本。
 
-2. 直接使用远程maven仓库(如果没有修改版本的需求，推荐使用远程仓库的模式)
-    1. 添加属性
+2. 在pom.xml中设置父项目和基础依赖
       ```
       <!--设置父项目为本项目-->
       <parent>
@@ -27,21 +26,9 @@
                <version>1.0</version>
           </dependency>
       </dependencys>
-   
-      <repositories>
-          <!--添加git远程仓库-->
-          <repository>
-              <id>spring-base</id>
-              <url>https://github.com/CodeLFC/maven-repository/spring-base</url>
-              <snapshots>
-               <enabled>true</enabled>
-               <updatePolicy>always</updatePolicy>
-              </snapshots>       
-          </repository>
-      </repositories>
-      ``` 
+      ```
 # 简单应用到项目
-1. 统一结果格式：在Application中添加包扫描配置即可自动将Controller层返回结果封装为JSON
+1. 统一结果格式：在新项目的Application中添加包扫描配置即可自动将Controller层返回结果封装为JSON
      ``` 
     @SpringBootApplication
     //添加基础包（gaozhi.online.base.ScanClass.class）的扫描；可以添加自身项目的扫描路径
