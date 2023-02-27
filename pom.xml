@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>base</module>
+        <module>spring-parent</module>
     </modules>
 
     <parent>
@@ -19,13 +19,15 @@
     <groupId>gaozhi.online</groupId>
     <artifactId>spring-base</artifactId>
     <version>1.0</version>
+    <description>springcloud项目基础构建模板</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <google.code.gson.version>2.9.0</google.code.gson.version>
         <spring-cloud.version>Hoxton.SR11</spring-cloud.version>
-        <github.global.server>github</github.global.server>
+        <spring-boot-starter-parent.version>2.3.10.RELEASE</spring-boot-starter-parent.version>
+        <google.code.gson.version>2.9.0</google.code.gson.version>
+        <com.auth0.java-jwt.version>3.4.0</com.auth0.java-jwt.version>
     </properties>
 
     <dependencyManagement>
@@ -40,105 +42,4 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <!--代码自动生成-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!---jwt-->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-        <!--++++++++++++++++++++++++++++GSON依赖++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${google.code.gson.version}</version>
-        </dependency>
-        <!--+++++++++++++++++++++++++++++++++++++springboot++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-
-        <!--springBoot起步依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>maven.repo</id>
-            <name>Local Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository>
-    </distributionManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo
-                    </altDeploymentRepository>
-                </configuration>
-            </plugin>
-            <plugin>
-                <!-- Deploy the web site -->
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <!-- select the Maven phase in which the plugin will be executed -->
-                        <phase>deploy</phase>
-                        <configuration>
-                            <!-- Plugin configuration goes here -->
-                            <server>github</server>
-                            <!-- The commit message -->
-                            <message>git maven repository</message>
-                            <!-- The location where the site is uploaded -->
-                            <repositoryName>maven-repository</repositoryName> <!-- github repo name -->
-                            <repositoryOwner>CodeLFC</repositoryOwner> <!-- organization or user name  -->
-                            <!-- Use merge or override the content -->
-                            <merge>true</merge>
-                            <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-
-                            <branch>refs/heads/spring-base</branch>
-                            <!--                        <includes>-->
-                            <!--                            <include>**/*</include>-->
-                            <!--                        </includes>-->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
 </project>

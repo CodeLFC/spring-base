@@ -22,7 +22,7 @@
       <dependencys>
           <dependency>
               <groupId>gaozhi.online</groupId>
-               <artifactId>base</artifactId>
+               <artifactId>spring-parent</artifactId>
                <version>1.0</version>
           </dependency>
       </dependencys>
@@ -31,8 +31,8 @@
 1. 统一结果格式：在新项目的Application中添加包扫描配置即可自动将Controller层返回结果封装为JSON
      ``` 
     @SpringBootApplication
-    //添加基础包（gaozhi.online.base.ScanClass.class）的扫描；可以添加自身项目的扫描路径
-    @ComponentScan(basePackageClasses = {gaozhi.online.base.ScanClass.class,Application.class})
+    //添加基础包（gaozhi.online.parent.ScanClass.class）的扫描；可以添加自身项目的扫描路径
+    @ComponentScan(basePackageClasses = {gaozhi.online.parent.ScanClass.class,Application.class})
     public class Application {
         public static void main(String[] args) {
             SpringApplication.run(Application.class);
@@ -112,9 +112,9 @@
    - 自定义校验逻辑（示例）
     ``` 
    import com.google.gson.Gson;
-   import gaozhi.online.base.exception.BusinessRuntimeException;
-   import gaozhi.online.base.interceptor.HeaderChecker;
-   import gaozhi.online.base.interceptor.HeaderPropertyChecker;
+   import gaozhi.online.parent.exception.BusinessRuntimeException;
+   import gaozhi.online.parent.interceptor.HeaderChecker;
+   import gaozhi.online.parent.interceptor.HeaderPropertyChecker;
    import gaozhi.online.peoplety.entity.Token;
    import gaozhi.online.peoplety.entity.UserInfo;
    import gaozhi.online.peoplety.exception.UserException;

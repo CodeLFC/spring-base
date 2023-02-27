@@ -7,10 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="base" />
+        <module name="spring-parent" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="base" target="11" />
       <module name="user" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="base" options="-parameters" />
       <module name="spring-base" options="" />
+      <module name="spring-parent" options="-parameters" />
       <module name="user" options="-parameters" />
     </option>
   </component>
