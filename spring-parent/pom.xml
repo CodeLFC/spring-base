@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>${org.projectlombok.lombok.version}</version>
         </dependency>
         <!---jwt-->
         <dependency>
